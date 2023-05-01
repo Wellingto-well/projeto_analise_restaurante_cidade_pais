@@ -4,7 +4,7 @@ import folium
 from streamlit_folium import folium_static
 import streamlit as st
 
-df = pd.read_csv('pages\\zomato.csv')
+df = pd.read_csv('zomato.csv')
 
 st.set_page_config(page_title="Home", page_icon="📊", layout="wide")
 
