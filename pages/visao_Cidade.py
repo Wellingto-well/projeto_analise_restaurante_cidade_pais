@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px 
 
-df = pd.read_csv('pages\\zomato.csv')
+df = pd.read_csv('zomato.csv')
 
 st.set_page_config(page_title="Cities", page_icon="🏙️", layout="wide")
 #TRATANDO DADOS
