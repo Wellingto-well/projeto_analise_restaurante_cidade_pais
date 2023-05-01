@@ -4,7 +4,7 @@ import plotly.express as px
 
 
 
-df = pd.read_csv('pages\\zomato.csv')
+df = pd.read_csv('zomato.csv')
 
 st.set_page_config(page_title='Cuisines', page_icon='🍽️', layout='wide')
 
