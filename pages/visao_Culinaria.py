@@ -153,7 +153,7 @@ def top10_piores_culinaria(df, top_n, countries):
     fig = px.bar(grouped_df, x='Cuisines', y='Aggregate rating', text_auto=True, height=400,title=f'Top {top_n} Piores Tipos de Culinárias')
     return st.plotly_chart(fig, use_container_width=True)
 
-st.markdown('#  🍽️ Visão Tipos de Cusinhas')
+st.markdown('#  🍽️ Visão Tipos de Culinárias')
 st.header('Melhores Restaurantes dos Principais tipos Culinários')
 
 
