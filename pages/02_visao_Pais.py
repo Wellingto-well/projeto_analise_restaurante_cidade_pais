@@ -2,11 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px 
 
-df = pd.read_csv('zomato.csv')
+df = pd.read_csv('pages\\zomato.csv')
 
-st.set_page_config(page_title="Countries", page_icon="🌍", layout="wide")
+st.set_page_config(page_title="Países", page_icon="🌍", layout="wide")
+
 #TRATANDO DADOS
-
 COUNTRIES = {
 1: "India",
 14: "Australia",
@@ -76,6 +76,29 @@ def filtro(df):
 
     return list(countries)
 
+taxas_cambio = {
+    'Botswana Pula(P)': 13.62,
+    'Brazilian Real(R$)': 4.91,
+    'Dollar($)': 1.0,
+    'Emirati Diram(AED)': 3.67,
+    'Indian Rupees(Rs.)': 82.52,
+    'Indonesian Rupiah(IDR)': 0.000067,
+    'NewZealand($)': 0.61,
+    'Pounds(£)': 1.24,
+    'Qatari Rial(QR)': 0.27,
+    'Rand(R)': 0.052,
+    'Sri Lankan Rupee(LKR)': 0.0034,
+    'Turkish Lira(TL)': 0.046
+}
+
+# Função para converter o valor para dólar
+def converter_para_dolar(moeda, valor):
+    taxa = taxas_cambio[moeda]
+    return valor * taxa
+
+# Criando a nova coluna 'Valor em Dólar'
+df['Valor em Dolar'] = df.apply(lambda row: converter_para_dolar(row['Currency'], row['Average Cost for two']), axis=1)
+
 countries = filtro(df)
 # quantidade de restaurante por pais 
 def quantidade_de_restaurante(df, countries):
@@ -116,14 +139,18 @@ def media_avaliacao_feita_pais(df, countries):
 # media de preço no prato para 2 pessoas
 def media_de_preço_prato_2_pessoas(df, countries):
     grouped_df = (
-    df.loc[df["Country Name"].isin(countries), ["Average Cost for two", "Country Name"]]
+    df.loc[df["Country Name"].isin(countries), ["Valor em Dolar", "Country Name"]]
     .groupby("Country Name")
     .mean()
-    .sort_values("Average Cost for two", ascending=False)
+    .sort_values("Valor em Dolar", ascending=False)
     .reset_index()
 )
-    fig = px.bar(grouped_df, x='Country Name', y='Average Cost for two', text_auto=True, height=400, title='media de preço de um prato para duas pessoas por país')
+    fig = px.bar(grouped_df, x='Country Name', y='Valor em Dolar', text_auto=True, height=400, title='media de preço de um prato para duas pessoas por país')
     st.plotly_chart(fig, use_container_width=True)
+
+
+
+st.title('Visão País')
 
 with st.container():
     quantidade_de_restaurante(df, countries)
@@ -132,6 +159,7 @@ with st.container():
     quantidade_de_cidades_por_pais(df,countries)
 
 with st.container():
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -139,3 +167,5 @@ with st.container():
 
     with col2:
         media_de_preço_prato_2_pessoas(df, countries)
+
+
