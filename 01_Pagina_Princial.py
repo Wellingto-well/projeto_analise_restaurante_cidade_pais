@@ -4,7 +4,7 @@ import folium
 from streamlit_folium import folium_static
 import streamlit as st
 
-df = pd.read_csv('zomato.csv')
+df = pd.read_csv('pages\\zomato.csv')
 
 st.set_page_config(page_title="Home", page_icon="📊", layout="wide")
 
@@ -119,9 +119,7 @@ def filtro_para_mapa(df):
 
 df = clean_code(df)
 
-st.markdown('# Fome Zero!')
-st.header('O Melhor lugar para encontrar seu mais novo restaurante favorito!')
-st.header('Temos as seguintes marcas dentro da nossa plataforma:')
+st.title('Algumas informações sobre a base de dado')
 
 
 with st.container():
@@ -149,4 +147,6 @@ with st.container():
         st.metric('Total de culinarias oferecidas', len(tipos_culinarios_unicos))
 
 with st.container():
+
     criação_do_mapa(df.loc[df["Country Name"].isin(filtro_para_mapa(df)), :])
+
