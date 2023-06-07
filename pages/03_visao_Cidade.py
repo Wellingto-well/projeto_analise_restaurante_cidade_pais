@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px 
 
-df = pd.read_csv('zomato.csv')
+df = pd.read_csv('pages\\zomato.csv')
 
 st.set_page_config(page_title="Cities", page_icon="🏙️", layout="wide")
 #TRATANDO DADOS
@@ -91,12 +91,14 @@ def top10_restaurante(df,countries):
             .reset_index()
         )
 
+    grouped_df_top10_restaurantes = grouped_df_top10_restaurantes.head(10)
+
     fig = px.bar(grouped_df_top10_restaurantes, x='City', y='Restaurant ID', text_auto=True, height=400, title='top 10 cidades com mais restaurente  na base de dados')
     return st.plotly_chart(fig,use_container_width=True)
 
 # quantidade de resutaurante com boas notas por cidade
 def top7_cidades_restaurantes_acima4(df,countries):
-    grouped_df = (
+    grouped_df_top_acima = (
     df.loc[
         (df["Aggregate rating"] >= 4) & (df["Country Name"].isin(countries)),
         ["Restaurant ID", "Country Name", "City"],
@@ -106,12 +108,13 @@ def top7_cidades_restaurantes_acima4(df,countries):
     .sort_values(["Restaurant ID", "City"], ascending=[False, True])
     .reset_index()
 )
-    fig = px.bar(grouped_df, x='City', y='Restaurant ID', text_auto=True, title='as 7 cidades com restaurentes com avaliação maior que 4')
+    grouped_df_top_acima = grouped_df_top_acima.head(7)
+    fig = px.bar(grouped_df_top_acima, x='City', y='Restaurant ID', text_auto=True, title='top7 cidades com restaurentes com avaliação maior que 4')
     return st.plotly_chart(fig, use_container_width=True)
 
 # quantidade de resutaurante com notas ruins por cidade
 def top7_cidades_restaurantes_abaixo2_5(df,countries):
-    grouped_df = (
+    grouped_df_top7_baixo = (
     df.loc[
         (df["Aggregate rating"] <= 2.5) & (df["Country Name"].isin(countries)),
         ["Restaurant ID", "Country Name", "City"],
@@ -121,10 +124,12 @@ def top7_cidades_restaurantes_abaixo2_5(df,countries):
     .sort_values(["Restaurant ID", "City"], ascending=[False, True])
     .reset_index()
 )
-    fig = px.bar(grouped_df, x='City', y='Restaurant ID', text_auto=True,  title='top7 cidade com restaurentes com media de avaiação abaixo de 2,5')
+    grouped_df_top7_baixo = grouped_df_top7_baixo.head(7)
+
+    fig = px.bar(grouped_df_top7_baixo, x='City', y='Restaurant ID', text_auto=True,  title='top7 cidade com restaurentes com avaiação abaixo de 2,5')
     return st.plotly_chart(fig, use_container_width=True)
 
-st.header("Visão Cidades")
+st.title("Visão Cidades")
 
 
 with st.container():
