@@ -4,7 +4,7 @@ import plotly.express as px
 
 
 
-df = pd.read_csv('zomato.csv')
+df = pd.read_csv('pages\\zomato.csv')
 
 st.set_page_config(page_title='Cuisines', page_icon='🍽️', layout='wide')
 
@@ -146,17 +146,33 @@ def top10_piores_culinaria(df, top_n, countries):
         df.loc[lines, ['Aggregate rating', 'Cuisines']]
         .groupby('Cuisines')
         .mean()
-        .sort_values('Aggregate rating', ascending=False)
+        .sort_values('Aggregate rating')
         .reset_index()
         .head(top_n)
     )
+
     fig = px.bar(grouped_df, x='Cuisines', y='Aggregate rating', text_auto=True, height=400,title=f'Top {top_n} Piores Tipos de Culinárias')
     return st.plotly_chart(fig, use_container_width=True)
 
-st.markdown('#  🍽️ Visão Tipos de Culinárias')
+def grafico_coluna_avaliação_entrega(df):
+    grouped_df = df.groupby('Is delivering now')['Aggregate rating'].mean().reset_index()
+
+    
+    fig =px.bar(grouped_df, x='Is delivering now', y='Aggregate rating', height=400, text_auto=True, title=f'Avaliação do Restaurante Por Entregas')
+    fig.update_xaxes(title_text='Realiza entrega\n0=Não e 1=Sim')
+    fig.update_yaxes(title_text='Avaliação')
+    return st.plotly_chart(fig, use_container_width=True)
+
+def grafico_coluna_avaliação_entrega_online(df):
+    grouped_df = df.groupby(['Has Online delivery'])['Aggregate rating'].mean().reset_index()
+    
+    fig =px.bar(grouped_df, x='Has Online delivery', y='Aggregate rating', height=400, text_auto=True, title=f'Avaliação do Restaurante Por Entregas Online')
+    fig.update_xaxes(title_text='Realiza Entrega Online\n0=Não e 1=Sim')
+    fig.update_yaxes(title_text='Avaliação')
+    return st.plotly_chart(fig, use_container_width=True) 
+
+st.markdown('# Visão Tipos de Culinárias')
 st.header('Melhores Restaurantes dos Principais tipos Culinários')
-
-
 with st.container():
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
@@ -182,12 +198,12 @@ with st.container():
         st.metric('Culinaria: Chinesa',maior_nota_Chinese)
 
 with st.container():
+    st.markdown(f"## Top {top_n} Restaurantes")
     dataframe= top_restaurants(countries, cuisines, top_n, df)
     st.dataframe(dataframe)
-    # top_10_restaurantes = df[df['Aggregate rating'] >= 4.9][['Restaurant ID','Restaurant Name','Country Name','City','Cuisines','Average Cost for two','Aggregate rating','Votes']].reset_index()
-    # st.dataframe(top_10_restaurantes.head(10))
 
 with st.container():
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -195,3 +211,10 @@ with st.container():
     
     with col2:
         top10_piores_culinaria(df, top_n, countries)
+
+
+with st.container():
+    grafico_coluna_avaliação_entrega(df)
+
+with st.container():
+    grafico_coluna_avaliação_entrega_online(df)
